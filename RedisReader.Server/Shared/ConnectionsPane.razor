@@ -1,0 +1,49 @@
+<!-- Sidebar -->
+<div class="sidebar">
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            @foreach (var (guid, name) in _redisConnections)
+            {
+                var link = $"connections/{guid}";
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="@link">
+                        <i class="nav-icon fas fa-database"></i>
+                        <p>
+                            @name
+                        </p>
+                    </NavLink>
+                </li>
+            }
+            <li class="nav-item">
+                <NavLink class="nav-link">
+                    <i class="nav-icon fas fa-plus"></i>
+                </NavLink>
+            </li>
+
+
+        </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+</div>
+
+
+@code {
+
+    private RedisConnection[] _redisConnections;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _redisConnections = new[]
+        {
+            new RedisConnection(Guid.NewGuid(), "name1"),
+            new RedisConnection(Guid.NewGuid(), "name2"),
+            new RedisConnection(Guid.NewGuid(), "name3"),
+        };
+    }
+
+
+    public record RedisConnection(Guid Id, string Name);
+
+
+}
