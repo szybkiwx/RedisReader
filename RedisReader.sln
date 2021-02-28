@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisReader.Client", "RedisReader.Client\RedisReader.Client.csproj", "{C96F48C5-D274-4997-9E37-60F623DEB739}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisReader.Server", "RedisReader.Server\RedisReader.Server.csproj", "{551D3384-9497-4E3C-89E0-DAE1D5B8B3D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{C96F48C5-D274-4997-9E37-60F623DEB739}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C96F48C5-D274-4997-9E37-60F623DEB739}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C96F48C5-D274-4997-9E37-60F623DEB739}.Release|Any CPU.Build.0 = Release|Any CPU
+		{551D3384-9497-4E3C-89E0-DAE1D5B8B3D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{551D3384-9497-4E3C-89E0-DAE1D5B8B3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{551D3384-9497-4E3C-89E0-DAE1D5B8B3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{551D3384-9497-4E3C-89E0-DAE1D5B8B3D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
