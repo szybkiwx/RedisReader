@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.Modal;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Authentication;
@@ -18,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RedisReader.Server.Data;
+using RedisReader.Server.Services;
 
 namespace RedisReader.Server
 {
@@ -49,6 +51,10 @@ namespace RedisReader.Server
             services.AddServerSideBlazor()
                 .AddMicrosoftIdentityConsentHandler();
             services.AddSingleton<WeatherForecastService>();
+            services.AddBlazoredModal();
+            services.AddBlazorContextMenu();
+            
+            services.AddScoped<IManageConnections, ConnectionManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

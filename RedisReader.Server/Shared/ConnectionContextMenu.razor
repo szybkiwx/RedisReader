@@ -1,0 +1,34 @@
+<ContextMenu Id="@MenuId">
+    <Item OnClick="Edit">Edit</Item>
+    <Item OnClick="@Delete">Delete</Item>
+</ContextMenu>
+
+@code {
+
+    [Parameter]
+    public Guid ConnectionId { get; set; }
+    
+    [Parameter]
+    public string MenuId { get; set; }
+    
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+
+    
+
+    private void Edit()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(ConnectionId), ConnectionId);
+        Task.Run(async () =>
+        {
+            var form = Modal.Show<Connection>("Edit connection", parameters);
+            var result = await form.Result;
+        });
+    }
+
+    private Task Delete()
+    {
+        return Task.CompletedTask;
+    }
+}

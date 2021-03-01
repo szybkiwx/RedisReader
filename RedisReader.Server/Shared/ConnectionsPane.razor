@@ -1,3 +1,6 @@
+@using RedisReader.Server.Services
+@inject IManageConnections ConnectionManager
+
 <!-- Sidebar -->
 <div class="sidebar">
     <!-- Sidebar Menu -->
@@ -6,19 +9,25 @@
             @foreach (var (guid, name) in _redisConnections)
             {
                 var link = $"connections/{guid}";
+                var menuId = $"ctxMenu{guid}"; 
+                <ConnectionContextMenu ConnectionId="@guid" MenuId="@menuId"></ConnectionContextMenu>
+
                 <li class="nav-item">
-                    <NavLink class="nav-link" href="@link">
-                        <i class="nav-icon fas fa-database"></i>
-                        <p>
-                            @name
-                        </p>
-                    </NavLink>
+                    <ContextMenuTrigger MenuId="@menuId">
+                        <NavLink class="nav-link" href="@link">
+                            <i class="nav-icon fas fa-database"></i>
+                            <p>
+                                @name
+                            </p>
+                        </NavLink>
+                    </ContextMenuTrigger>
                 </li>
             }
             <li class="nav-item">
-                <NavLink class="nav-link">
+                <a href="" class="nav-link" @onclick="ShowAddForm" @onclick:preventDefault>
                     <i class="nav-icon fas fa-plus"></i>
-                </NavLink>
+                    <p>Add connection</p>
+                </a>
             </li>
 
 
@@ -28,18 +37,34 @@
 </div>
 
 
+
 @code {
 
-    private RedisConnection[] _redisConnections;
+    [CascadingParameter] public IModalService Modal { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    private IEnumerable<RedisConnection> _redisConnections;
+
+    protected override void OnInitialized()
     {
-        _redisConnections = new[]
+        LoadConnections();
+    }
+
+    private void LoadConnections()
+    {
+        _redisConnections = ConnectionManager
+            .GetConnections()
+            .Select(c => new RedisConnection(c.Id, c.DisplayName));
+    }
+    
+    async Task ShowAddForm()
+    {
+        var form = Modal.Show<Connection>("New connection");
+        var result = await form.Result;
+        if (!result.Cancelled)
         {
-            new RedisConnection(Guid.NewGuid(), "name1"),
-            new RedisConnection(Guid.NewGuid(), "name2"),
-            new RedisConnection(Guid.NewGuid(), "name3"),
-        };
+            LoadConnections();
+            StateHasChanged();
+        }
     }
 
 

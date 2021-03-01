@@ -1,0 +1,112 @@
+@using System.ComponentModel.DataAnnotations
+@using RedisReader.Server.Models
+@using RedisReader.Server.Services
+@inject IManageConnections ConnectionsManager
+
+<EditForm Model="@_connectionDetails" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="card-body">
+        <div class="form-group">
+            <label for="displayName">Display name</label>
+            <InputText class="form-control" id="displayName" @bind-Value="_connectionDetails.DisplayName"></InputText>
+        </div>
+        <div class="form-group">
+            <label for="host">Host</label>
+            <InputText class="form-control" id="host" @bind-Value="_connectionDetails.Host"></InputText>
+        </div>
+        <div class="form-group">
+            <label for="port">Port</label>
+            <InputNumber class="form-control" id="port" @bind-Value="_connectionDetails.Port"></InputNumber>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+           <InputText type="password" id="password" placeholder="Password" @bind-Value="@_connectionDetails.Password" />
+        </div>
+        <div class="form-check">
+            <label class="form-check-label" for="tls">Use TLS</label>
+            <InputCheckbox id="tls" @bind-Value="@_connectionDetails.Tls"/>
+        </div>
+    </div>
+    <!-- /.card-body -->
+
+    <div class="card-footer">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button class="btn btn-secondary" @onclick="Close">Cancel</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public Guid? ConnectionId { get; set; }
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+
+    private ConnectionDetails _connectionDetails = new()
+    {
+        Port = 6379
+    };
+    private EditContext _editContext;
+
+    protected override void OnInitialized()
+    {
+        if (ConnectionId == null) return;
+        var connection = ConnectionsManager.GetConnection(ConnectionId.Value);
+        _connectionDetails = new ConnectionDetails
+        {
+            DisplayName = connection.DisplayName,
+            Host = connection.Host,
+            Password = connection.Password,
+            Port = connection.Port,
+            Tls = connection.UseTsl
+        };
+        
+        _editContext = new EditContext(_connectionDetails);
+    }
+
+    private void HandleValidSubmit()
+    {
+        if (ConnectionId.HasValue)
+         {
+            ConnectionsManager.UpdateConnection(new RedisConnection {
+                DisplayName = _connectionDetails.DisplayName,
+                Host = _connectionDetails.Host,
+                Port = _connectionDetails.Port,
+                UseTsl = _connectionDetails.Tls,
+                Password = _connectionDetails.Password,
+                Id = ConnectionId.Value
+            });    
+        }
+        else
+        {
+            ConnectionsManager.AddConnection(new RedisConnection{
+                DisplayName = _connectionDetails.DisplayName,
+                Host = _connectionDetails.Host,
+                Port = _connectionDetails.Port,
+                UseTsl = _connectionDetails.Tls,
+                Password = _connectionDetails.Password
+            });
+        }
+        
+        ModalInstance.CloseAsync(ModalResult.Ok(_connectionDetails));
+    }
+    
+    private void Close() 
+    {
+        ModalInstance.CloseAsync(ModalResult.Cancel());
+    }
+    
+    public class ConnectionDetails
+    {
+        [Required]
+        public string DisplayName { get; set; }
+        
+        [Required]
+        public string Host { get; set; }
+
+        [Required]
+        public int Port { get; set; }
+
+        public string Password { get; set; }
+        public bool Tls { get; set; }
+    }
+
+}
