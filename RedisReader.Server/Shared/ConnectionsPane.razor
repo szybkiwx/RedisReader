@@ -72,7 +72,7 @@
     
     async Task ShowAddForm()
     {
-        var form = Modal.Show<Connection>("New connection");
+        var form = Modal.Show<ConnectionForm>("New connection");
         var result = await form.Result;
         if (!result.Cancelled)
         {

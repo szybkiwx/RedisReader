@@ -1,9 +1,19 @@
 @page "/connections/{Id:guid}"
 
-Content of @Id
-
+<div class="row">
+    <!-- left column -->
+    <div class="col-md-6">
+        <Keys Id="@Id"/>
+    </div>
+    <!--/.col (left) -->
+    <!-- right column -->
+    <div class="col-md-6">
+        <Values/>
+    </div>
+</div>
 
 @code {
+
     [Parameter]
     public Guid Id { get; set; }
 

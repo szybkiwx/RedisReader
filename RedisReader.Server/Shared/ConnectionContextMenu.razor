@@ -21,7 +21,7 @@
     {
         var parameters = new ModalParameters();
         parameters.Add(nameof(ConnectionId), ConnectionId);
-        var form = Modal.Show<Connection>("Edit connection", parameters);
+        var form = Modal.Show<ConnectionForm>("Edit connection", parameters);
         OnModalOpened.InvokeAsync(form);
     }
 
