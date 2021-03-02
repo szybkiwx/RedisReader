@@ -10,7 +10,7 @@
             {
                 var link = $"connections/{guid}";
                 var menuId = $"ctxMenu{guid}"; 
-                <ConnectionContextMenu ConnectionId="@guid" MenuId="@menuId" OnConnectionsChanged="@ReLoadConnections"></ConnectionContextMenu>
+                <ConnectionContextMenu ConnectionId="@guid" MenuId="@menuId" OnModalOpened="@ModalOpened"></ConnectionContextMenu>
 
                 <li class="nav-item">
                     <ContextMenuTrigger MenuId="@menuId">
@@ -49,6 +49,14 @@
         LoadConnections();
     }
 
+    private async Task ModalOpened(IModalReference modal)
+    {
+        var result = await modal.Result;
+        if (!result.Cancelled)
+        {
+            ReLoadConnections();
+        }
+    }
     private void ReLoadConnections()
     {
         LoadConnections();

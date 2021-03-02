@@ -44,7 +44,6 @@
     {
         Port = 6379
     };
-    private EditContext _editContext;
 
     protected override void OnInitialized()
     {
@@ -58,32 +57,27 @@
             Port = connection.Port,
             Tls = connection.UseTsl
         };
-        
-        _editContext = new EditContext(_connectionDetails);
     }
 
     private void HandleValidSubmit()
     {
+        var model = new RedisConnection
+        {
+            DisplayName = _connectionDetails.DisplayName,
+            Host = _connectionDetails.Host,
+            Port = _connectionDetails.Port,
+            UseTsl = _connectionDetails.Tls,
+            Password = _connectionDetails.Password,
+        };
+        
         if (ConnectionId.HasValue)
-         {
-            ConnectionsManager.UpdateConnection(new RedisConnection {
-                DisplayName = _connectionDetails.DisplayName,
-                Host = _connectionDetails.Host,
-                Port = _connectionDetails.Port,
-                UseTsl = _connectionDetails.Tls,
-                Password = _connectionDetails.Password,
-                Id = ConnectionId.Value
-            });    
+        {
+            model.Id = ConnectionId.Value;
+            ConnectionsManager.UpdateConnection(model);    
         }
         else
         {
-            ConnectionsManager.AddConnection(new RedisConnection{
-                DisplayName = _connectionDetails.DisplayName,
-                Host = _connectionDetails.Host,
-                Port = _connectionDetails.Port,
-                UseTsl = _connectionDetails.Tls,
-                Password = _connectionDetails.Password
-            });
+            ConnectionsManager.AddConnection(model);
         }
         
         ModalInstance.CloseAsync(ModalResult.Ok(_connectionDetails));
