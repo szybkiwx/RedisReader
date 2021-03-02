@@ -10,7 +10,7 @@
             {
                 var link = $"connections/{guid}";
                 var menuId = $"ctxMenu{guid}"; 
-                <ConnectionContextMenu ConnectionId="@guid" MenuId="@menuId"></ConnectionContextMenu>
+                <ConnectionContextMenu ConnectionId="@guid" MenuId="@menuId" OnConnectionsChanged="@ReLoadConnections"></ConnectionContextMenu>
 
                 <li class="nav-item">
                     <ContextMenuTrigger MenuId="@menuId">
@@ -49,6 +49,12 @@
         LoadConnections();
     }
 
+    private void ReLoadConnections()
+    {
+        LoadConnections();
+        StateHasChanged();
+    }
+    
     private void LoadConnections()
     {
         _redisConnections = ConnectionManager
@@ -62,8 +68,7 @@
         var result = await form.Result;
         if (!result.Cancelled)
         {
-            LoadConnections();
-            StateHasChanged();
+            ReLoadConnections();
         }
     }
 

@@ -14,7 +14,8 @@
     [CascadingParameter]
     public IModalService Modal { get; set; }
 
-    
+    [Parameter]
+    public EventCallback OnConnectionsChanged { get; set; }
 
     private void Edit()
     {
@@ -24,6 +25,10 @@
         {
             var form = Modal.Show<Connection>("Edit connection", parameters);
             var result = await form.Result;
+            if (!result.Cancelled)
+            {
+                await OnConnectionsChanged.InvokeAsync();
+            }
         });
     }
 
