@@ -1,5 +1,5 @@
 <ContextMenu Id="@MenuId">
-    <Item OnClick="Edit">Edit</Item>
+    <Item OnClick="@Edit">Edit</Item>
     <Item OnClick="@Delete">Delete</Item>
 </ContextMenu>
 
@@ -17,10 +17,14 @@
     [Parameter]
     public EventCallback OnConnectionsChanged { get; set; }
 
-    private void Edit()
+    private Task Edit()
     {
         var parameters = new ModalParameters();
         parameters.Add(nameof(ConnectionId), ConnectionId);
+        
+        var form = Modal.Show<Connection>("Edit connection", parameters);
+        return form.Result;
+        
         Task.Run(async () =>
         {
             var form = Modal.Show<Connection>("Edit connection", parameters);
