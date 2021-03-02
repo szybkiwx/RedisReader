@@ -54,7 +54,10 @@ namespace RedisReader.Server
             services.AddBlazoredModal();
             services.AddBlazorContextMenu();
             
-            services.AddScoped<IManageConnections, ConnectionManager>();
+            services.AddScoped<IStoreConnections, ConnectionStore>();
+            services.AddSingleton<IStoreConnections, ConnectionStore>();
+            services.AddSingleton<IReadFromRedis, Services.RedisReader>();
+            services.AddSingleton<IManageRedisConnections, ManageRedisConnections>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

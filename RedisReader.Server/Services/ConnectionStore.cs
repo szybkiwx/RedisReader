@@ -6,7 +6,16 @@ using RedisReader.Server.Models;
 
 namespace RedisReader.Server.Services
 {
-    public class ConnectionManager : IManageConnections
+    public interface IStoreConnections
+    {
+        List<RedisConnection> GetConnections();
+        void AddConnection(RedisConnection connection);
+        void DeleteConnection(Guid id);
+        RedisConnection GetConnection(Guid id);
+        void UpdateConnection(RedisConnection connection);
+    }
+    
+    public class ConnectionStore : IStoreConnections
     {
         private readonly string _dbPath = Path.Join(AppContext.BaseDirectory, "Data.db");
         private const string ConnectionsCollectionName = "connections";

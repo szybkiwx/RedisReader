@@ -1,7 +1,7 @@
 @using System.ComponentModel.DataAnnotations
 @using RedisReader.Server.Models
 @using RedisReader.Server.Services
-@inject IManageConnections ConnectionsManager
+@inject IStoreConnections ConnectionsManager
 
 <EditForm Model="@_connectionDetails" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator/>
@@ -12,12 +12,8 @@
             <InputText class="form-control" id="displayName" @bind-Value="_connectionDetails.DisplayName"></InputText>
         </div>
         <div class="form-group">
-            <label for="host">Host</label>
-            <InputText class="form-control" id="host" @bind-Value="_connectionDetails.Host"></InputText>
-        </div>
-        <div class="form-group">
-            <label for="port">Port</label>
-            <InputNumber class="form-control" id="port" @bind-Value="_connectionDetails.Port"></InputNumber>
+            <label for="endpoint">Endpoint</label>
+            <InputText class="form-control" id="endpoint" placeholder="localhost:6379" @bind-Value="_connectionDetails.Endpoint"></InputText>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
@@ -40,10 +36,7 @@
     [Parameter] public Guid? ConnectionId { get; set; }
     [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
 
-    private ConnectionDetails _connectionDetails = new()
-    {
-        Port = 6379
-    };
+    private ConnectionDetails _connectionDetails = new();
 
     protected override void OnInitialized()
     {
@@ -52,9 +45,8 @@
         _connectionDetails = new ConnectionDetails
         {
             DisplayName = connection.DisplayName,
-            Host = connection.Host,
+            Endpoint = connection.Endpoint,
             Password = connection.Password,
-            Port = connection.Port,
             Tls = connection.UseTsl
         };
     }
@@ -64,8 +56,7 @@
         var model = new RedisConnection
         {
             DisplayName = _connectionDetails.DisplayName,
-            Host = _connectionDetails.Host,
-            Port = _connectionDetails.Port,
+            Endpoint = _connectionDetails.Endpoint,
             UseTsl = _connectionDetails.Tls,
             Password = _connectionDetails.Password,
         };
@@ -94,10 +85,7 @@
         public string DisplayName { get; set; }
         
         [Required]
-        public string Host { get; set; }
-
-        [Required]
-        public int Port { get; set; }
+        public string Endpoint { get; set; }
 
         public string Password { get; set; }
         public bool Tls { get; set; }
