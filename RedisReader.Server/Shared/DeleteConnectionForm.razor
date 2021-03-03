@@ -1,0 +1,38 @@
+@using RedisReader.Server.Services
+@inject IStoreConnections ConnectionsManager
+
+<div>
+    <div class="card-body">
+        Are you sure you want to delete connection 
+    </div>
+    <!-- /.card-body -->
+
+    <div class="card-footer">
+        <button type="submit" class="btn btn-primary" @onclick="Delete">Confirm</button>
+        <button class="btn btn-secondary" @onclick="Close">Cancel</button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid ConnectionId { get; set; }
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+
+    private string Name { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var connection = ConnectionsManager.GetConnection(ConnectionId);
+        Name = connection.DisplayName;
+    }
+
+    private void Delete()
+    {
+        ConnectionsManager.DeleteConnection(ConnectionId);
+        ModalInstance.CloseAsync(ModalResult.Ok(ConnectionId + "deleted"));
+    }
+    
+    private void Close() 
+    {
+        ModalInstance.CloseAsync(ModalResult.Cancel());
+    }
+}

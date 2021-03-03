@@ -56,7 +56,7 @@ namespace RedisReader.Server
             
             services.AddScoped<IStoreConnections, ConnectionStore>();
             services.AddSingleton<IStoreConnections, ConnectionStore>();
-            services.AddSingleton<IReadFromRedis, Services.RedisReader>();
+            services.AddSingleton<IReadFromRedis, Services.DataReader>();
             services.AddSingleton<IManageRedisConnections, ManageRedisConnections>();
         }
 

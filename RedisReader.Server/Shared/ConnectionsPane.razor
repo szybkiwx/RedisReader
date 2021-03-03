@@ -10,7 +10,10 @@
             {
                 var link = $"connections/{guid}";
                 var menuId = $"ctxMenu{guid}"; 
-                <ConnectionContextMenu ConnectionId="@guid" MenuId="@menuId" OnModalOpened="@ModalOpened"></ConnectionContextMenu>
+                <ConnectionContextMenu 
+                    ConnectionId="@guid" 
+                    MenuId="@menuId"
+                    ModalOpened="@ModalOpened"/>
 
                 <li class="nav-item">
                     <ContextMenuTrigger MenuId="@menuId">
@@ -72,7 +75,7 @@
     
     async Task ShowAddForm()
     {
-        var form = Modal.Show<ConnectionForm>("New connection");
+        var form = Modal.Show<EditConnectionForm>("New connection");
         var result = await form.Result;
         if (!result.Cancelled)
         {
