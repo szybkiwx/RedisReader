@@ -9,6 +9,7 @@ namespace RedisReader.Server.Services
         void Connect(Guid id);
         void CloseConnection(Guid id);
         ConnectionMultiplexer GetConnection(Guid id);
+        bool IsConnected(Guid id);
     }
     
     public class ManageRedisConnections : IManageRedisConnections
@@ -45,6 +46,11 @@ namespace RedisReader.Server.Services
         public ConnectionMultiplexer GetConnection(Guid id)
         {
             return _activeConnections[id];
+        }
+
+        public bool IsConnected(Guid id)
+        {
+            return _activeConnections.ContainsKey(id);
         }
     }
 }

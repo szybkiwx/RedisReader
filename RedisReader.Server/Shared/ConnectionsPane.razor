@@ -1,5 +1,6 @@
 @using RedisReader.Server.Services
-@inject IStoreConnections ConnectionManager
+@inject IStoreConnections ConnectionStore
+@inject IManageRedisConnections ManageRedisConnections
 
 <!-- Sidebar -->
 <div class="sidebar">
@@ -9,22 +10,33 @@
             @foreach (var (guid, name) in _redisConnections)
             {
                 var link = $"connections/{guid}";
-                var menuId = $"ctxMenu{guid}"; 
-                <ConnectionContextMenu 
-                    ConnectionId="@guid" 
+                var menuId = $"ctxMenu{guid}";
+                <ConnectionContextMenu
+                    ConnectionId="@guid"
                     MenuId="@menuId"
                     ModalOpened="@ModalOpened"/>
+                <ContextMenuTrigger MenuId="@menuId">
 
-                <li class="nav-item">
-                    <ContextMenuTrigger MenuId="@menuId">
-                        <NavLink class="nav-link" href="@link">
+                    <li class="nav-item">
+                        <NavLink href="#" class="nav-link" @ondblclick="() => Connect(guid)" @onclick:preventDefault>
                             <i class="nav-icon fas fa-database"></i>
+
                             <p>
                                 @name
+                                <span class="right">
+                                    @if (ManageRedisConnections.IsConnected(guid))
+                                    {
+                                        <i class="fas fa-check-circle" style="color: green"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-times-circle" style="color:#ff0000"></i>
+                                    }
+                                </span>
                             </p>
                         </NavLink>
-                    </ContextMenuTrigger>
-                </li>
+                    </li>
+                </ContextMenuTrigger>
             }
             <li class="nav-item">
                 <a href="" class="nav-link" @onclick="ShowAddForm" @onclick:preventDefault>
@@ -40,10 +52,10 @@
 </div>
 
 
-
 @code {
 
-    [CascadingParameter] public IModalService Modal { get; set; }
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
 
     private IEnumerable<RedisConnection> _redisConnections;
 
@@ -60,19 +72,20 @@
             ReLoadConnections();
         }
     }
+
     private void ReLoadConnections()
     {
         LoadConnections();
         StateHasChanged();
     }
-    
+
     private void LoadConnections()
     {
-        _redisConnections = ConnectionManager
+        _redisConnections = ConnectionStore
             .GetConnections()
             .Select(c => new RedisConnection(c.Id, c.DisplayName));
     }
-    
+
     async Task ShowAddForm()
     {
         var form = Modal.Show<EditConnectionForm>("New connection");
@@ -81,6 +94,11 @@
         {
             ReLoadConnections();
         }
+    }
+
+    private void Connect(Guid id)
+    {
+        ManageRedisConnections.Connect(id);
     }
 
 
