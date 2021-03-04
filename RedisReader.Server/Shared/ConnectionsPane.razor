@@ -18,7 +18,7 @@
                 <ContextMenuTrigger MenuId="@menuId">
 
                     <li class="nav-item">
-                        <NavLink href="#" class="nav-link" @ondblclick="() => Connect(guid)" @onclick:preventDefault>
+                        <NavLink href="@link" class="nav-link" @ondblclick="() => Connect(guid)">
                             <i class="nav-icon fas fa-database"></i>
 
                             <p>
@@ -98,7 +98,17 @@
 
     private void Connect(Guid id)
     {
-        ManageRedisConnections.Connect(id);
+        try
+        {
+            ManageRedisConnections.Connect(id);
+        }
+        catch (Exception e)
+        {
+            var parameters = new ModalParameters();
+            parameters.Add("Endpoint", ConnectionStore.GetConnection(id).Endpoint);
+            parameters.Add("Message", e.Message);
+            Modal.Show<CannotConnectModal>("Error connecting to database", parameters); 
+        }
     }
 
 

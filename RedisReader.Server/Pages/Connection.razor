@@ -1,17 +1,26 @@
 @page "/connections/{Id:guid}"
+@using RedisReader.Server.Services
 
-<div class="row">
-    <!-- left column -->
-    <div class="col-md-6">
-        <Keys Id="@Id"/>
-    </div>
-    <!--/.col (left) -->
-    <!-- right column -->
-    <div class="col-md-6">
-        <Values/>
-    </div>
-</div>
+@inject IManageRedisConnections ManageRedisConnections
 
+@if (ManageRedisConnections.IsConnected(Id))
+{
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+            <Keys Id="@Id"/>
+        </div>
+        <!--/.col (left) -->
+        <!-- right column -->
+        <div class="col-md-6">
+            <Values/>
+        </div>
+    </div>
+}
+else
+{
+    <h3>Connect to the server in the connections pane</h3>
+}
 @code {
 
     [Parameter]

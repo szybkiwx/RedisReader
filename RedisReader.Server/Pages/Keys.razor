@@ -1,8 +1,24 @@
+@using RedisReader.Server.Services
+@using StackExchange.Redis
+@inject IReadFromRedis Reader
 <h3>Keys</h3>
-
+<ul>
+@foreach (var key in KeyList)
+{
+    <li>@key</li>
+}
+</ul>
 @code {
     [Parameter]
     public Guid Id { get; set; }
     
+    private List<string> KeyList { get; set; }
     
+    private RedisValue Pattern { get; set; }
+
+    protected override void OnInitialized()
+    {
+        KeyList = Reader.GetKeys(Id, Pattern);
+    }
+
 }
