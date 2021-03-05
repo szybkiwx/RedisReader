@@ -1,6 +1,7 @@
 @using RedisReader.Server.Services
 @inject IStoreConnections ConnectionStore
 @inject IManageRedisConnections ManageRedisConnections
+@inject ConnectionStateContainer ConnectionStateContainer
 
 <!-- Sidebar -->
 <div class="sidebar">
@@ -16,7 +17,6 @@
                     MenuId="@menuId"
                     ModalOpened="@ModalOpened"/>
                 <ContextMenuTrigger MenuId="@menuId">
-
                     <li class="nav-item">
                         <NavLink href="@link" class="nav-link" @ondblclick="() => Connect(guid)">
                             <i class="nav-icon fas fa-database"></i>
@@ -58,6 +58,8 @@
     public IModalService Modal { get; set; }
 
     private IEnumerable<RedisConnection> _redisConnections;
+
+    public record RedisConnection(Guid Id, string Name);
 
     protected override void OnInitialized()
     {
@@ -101,6 +103,7 @@
         try
         {
             ManageRedisConnections.Connect(id);
+            ConnectionStateContainer.NotifyStateChanged();
         }
         catch (Exception e)
         {
@@ -110,9 +113,9 @@
             Modal.Show<CannotConnectModal>("Error connecting to database", parameters); 
         }
     }
+    
+    
 
-
-    public record RedisConnection(Guid Id, string Name);
 
 
 }

@@ -1,6 +1,6 @@
 @page "/connections/{Id:guid}"
 @using RedisReader.Server.Services
-
+@inject ConnectionStateContainer ConnectionStateContainer
 @inject IManageRedisConnections ManageRedisConnections
 
 @if (ManageRedisConnections.IsConnected(Id))
@@ -26,4 +26,13 @@ else
     [Parameter]
     public Guid Id { get; set; }
 
+    protected override void OnInitialized()
+    {
+        ConnectionStateContainer.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        ConnectionStateContainer.OnChange -= StateHasChanged;
+    }
 }
