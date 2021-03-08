@@ -59,6 +59,7 @@ namespace RedisReader.Server
             services.AddSingleton<IReadFromRedis, Services.DataReader>();
             services.AddSingleton<IManageRedisConnections, ManageRedisConnections>();
             services.AddSingleton<ConnectionStateContainer>();
+            services.AddSingleton<KeyStateContainer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

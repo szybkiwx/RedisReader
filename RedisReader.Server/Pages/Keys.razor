@@ -1,13 +1,20 @@
 @using RedisReader.Server.Services
 @using StackExchange.Redis
 @inject IReadFromRedis Reader
-<h3>Keys</h3>
-<ul>
-@foreach (var key in KeyList)
-{
-    <li>@key</li>
-}
-</ul>
+@inject KeyStateContainer StateContainer
+
+<table class="table table-bordered">
+    <tbody>
+    @foreach (var (key, index) in KeyList.Select((x, i) => (x, i)))
+    {
+        <tr>
+            <td>@(index + 1)</td>
+            <td @onclick="() => ShowValue(key)">@key</td>
+        </tr>
+
+    }
+    </tbody>
+</table>
 @code {
     [Parameter]
     public Guid Id { get; set; }
@@ -19,6 +26,11 @@
     protected override void OnInitialized()
     {
         KeyList = Reader.GetKeys(Id, Pattern);
+    }
+
+    private void ShowValue(string key)
+    {
+       StateContainer.SetKey(key);
     }
 
 }

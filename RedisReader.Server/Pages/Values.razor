@@ -1,6 +1,17 @@
-<h3>Values</h3>
+@using RedisReader.Server.Services
+@inject KeyStateContainer StateContainer
+
+
 
 @code {
-    [Parameter]
-    public Guid Id { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        StateContainer.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        StateContainer.OnChange -= StateHasChanged;
+    }
 }
