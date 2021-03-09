@@ -1,0 +1,13 @@
+<table class="table table-bordered">
+    <tbody>
+    @foreach (var val in Value)
+    {
+        <tr><td>@val</td></tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public List<string> Value { get; set; }
+}

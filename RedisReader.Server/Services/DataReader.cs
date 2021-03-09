@@ -9,6 +9,7 @@ namespace RedisReader.Server.Services
     public interface IReadFromRedis
     {
         List<string> GetKeys(Guid connectionId, RedisValue pattern);
+        IType GetValue(Guid connectionId, string key);
     }
 
     public class DataReader : IReadFromRedis

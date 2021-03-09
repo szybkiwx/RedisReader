@@ -1,9 +1,32 @@
 @using RedisReader.Server.Services
+@using RedisReader.Server.Services.ValueTypes
+@using RedisReader.Server.Pages.ValuePages
 @inject KeyStateContainer StateContainer
+@inject IReadFromRedis DataReader
+
+@if (StateContainer.Key == null)
+{
+    return;
+}
+
+@switch (DataReader.GetValue(Id, StateContainer.Key))
+{
+    case StringType str:
+        <StringValueView Value="@str.Value"/>
+        break;
+        
+    case ListType lst:
+        <ListValueView Value="@lst.Value"/>
+        break;
+    default:
+        break;
+}
 
 
 
 @code {
+    [Parameter]
+    public Guid Id { get; set; }
     
     protected override void OnInitialized()
     {
