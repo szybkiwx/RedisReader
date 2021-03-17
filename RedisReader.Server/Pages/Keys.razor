@@ -20,12 +20,12 @@
     public Guid Id { get; set; }
     
     private List<string> KeyList { get; set; }
-    
-    private RedisValue Pattern { get; set; }
+
+    private RedisValue Pattern { get; set; } = "rikstv.play.api*";
 
     protected override void OnInitialized()
     {
-        KeyList = Reader.GetKeys(Id, Pattern);
+        KeyList = Reader.GetKeys(Id, Pattern, 200, 50);
     }
 
     private void ShowValue(string key)

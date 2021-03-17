@@ -24,6 +24,12 @@ namespace RedisReader.Server.Services
 
         public void Connect(Guid id)
         {
+            if (_activeConnections.ContainsKey(id))
+            {
+                _activeConnections[id].Dispose();
+                _activeConnections.Remove(id);
+            }
+            
             var connectionDetails = _connectionsStore.GetConnection(id);
             var mux = ConnectionMultiplexer.Connect(new ConfigurationOptions
             {

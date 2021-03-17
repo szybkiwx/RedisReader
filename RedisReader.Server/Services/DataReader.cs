@@ -8,7 +8,7 @@ namespace RedisReader.Server.Services
 {
     public interface IReadFromRedis
     {
-        List<string> GetKeys(Guid connectionId, RedisValue pattern);
+        List<string> GetKeys(Guid connectionId, RedisValue pattern, int page, int pageSize);
         IType GetValue(Guid connectionId, string key);
     }
 
@@ -21,12 +21,17 @@ namespace RedisReader.Server.Services
             _connections = connections;
         }
         
-        public List<string> GetKeys(Guid connectionId, RedisValue pattern = default)
+        public List<string> GetKeys(Guid connectionId, RedisValue pattern, int page, int pageSize)
         {
             var conn = _connections.GetConnection(connectionId);
             var endPoint = conn.GetEndPoints().First();
             var server = conn.GetServer(endPoint);
-            return server.Keys(pattern: pattern).Select(x => x.ToString()).ToList();
+            
+            return server
+                .Keys(pattern: pattern)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => x.ToString()).ToList();
         }
 
         public IType GetValue(Guid connectionId, string key)

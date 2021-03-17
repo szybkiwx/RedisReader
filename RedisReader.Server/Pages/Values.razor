@@ -18,6 +18,12 @@
     case ListType lst:
         <ListValueView Value="@lst.Value"/>
         break;
+    case HashSetType hsh:
+        <HashSetValueView Value="@hsh.Value"/>
+        break;
+    case SetType set:
+        <SetValueView Value="@set.Value"/>
+        break;
     default:
         break;
 }

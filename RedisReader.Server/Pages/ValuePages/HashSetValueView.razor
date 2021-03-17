@@ -1,0 +1,20 @@
+<table class="table table-bordered">
+    <thead>
+    <th>Hash key</th>
+    <th>Hash value</th>
+    </thead>
+    <tbody>
+    @foreach (var (key, value) in Value)
+    {
+        <tr>
+            <td>@key</td>
+            <td>@value</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public Dictionary<string, string> Value { get; set; }
+}
