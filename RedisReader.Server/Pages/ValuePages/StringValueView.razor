@@ -1,7 +1,55 @@
-@Value
+@using Newtonsoft.Json.Linq
+@using Newtonsoft.Json
 
+<div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary active">
+        <input type="radio" name="options" id="option1" autocomplete="off" checked="" @onclick="() => SetFormat(ValueFormat.Raw)"> Raw string
+    </label>
+    <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option2" autocomplete="off" @onclick="() => SetFormat(ValueFormat.Json)"> JSON
+    </label>
+    <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option3" autocomplete="off" @onclick="() => SetFormat(ValueFormat.Protobuf)"> ProtoBuf
+    </label>
+</div>
+<div>
+@switch (CurrentFormat)
+{
+    case ValueFormat.Raw:
+        @Value
+        break;
+    case ValueFormat.Json:
+        try
+        {
+            <pre>@JToken.Parse(Value).ToString(Formatting.Indented) </pre>
+        }
+        catch (Exception e)
+        {
+            <span>Invalid value</span>
+        }
+        break;
+        
+
+}
+</div>
 
 @code {
+
+    enum ValueFormat
+    {
+        Raw, 
+        Json, 
+        Protobuf
+    }
+    
     [Parameter]
     public string Value { get; set; }
+    
+    private ValueFormat CurrentFormat { get; set; }
+
+    private void SetFormat(ValueFormat format)
+    {
+        CurrentFormat = format;
+    }
+
 }
