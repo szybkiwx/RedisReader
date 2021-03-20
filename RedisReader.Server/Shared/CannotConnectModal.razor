@@ -1,4 +1,11 @@
-Could not connect to @Endpoint: @Message
+Error connecting to Redis @Message
+
+@if (!string.IsNullOrEmpty(Endpoint))
+{
+    <span>
+        Endpoint: @Endpoint
+    </span>
+}
 
 @code {
     [Parameter]

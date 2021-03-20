@@ -110,7 +110,13 @@
             var parameters = new ModalParameters();
             parameters.Add("Endpoint", ConnectionStore.GetConnection(id).Endpoint);
             parameters.Add("Message", e.Message);
-            Modal.Show<CannotConnectModal>("Error connecting to database", parameters); 
+            
+            var options = new ModalOptions
+            {
+                Class = "blazored-modal-error blazored-modal"
+            };
+            
+            Modal.Show<CannotConnectModal>("Error connecting to database", parameters, options);
         }
     }
     

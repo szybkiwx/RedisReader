@@ -4,45 +4,60 @@
 @inject KeyStateContainer StateContainer
 @inject IJSRuntime JS;
 
-<table id="keys-table" class="table table-bordered">
-    <thead>
-    <tr>
-        <td>No.</td>
-        <td>Key</td>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var (key, index) in KeyList.Select((x, i) => (x, i)))
-    {
+<EditForm Model="@_search" OnValidSubmit="UpdateKeys">
+     <label for="search-pattern">Search pattern</label>
+     <InputText id="search-pattern" @bind-Value="_search.Pattern"></InputText>
+     <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+<div class="scroll">
+    <table id="keys-table" class="table table-bordered">
+        <thead>
         <tr>
-            <td>@(index + 1)</td>
-            <td @onclick="() => ShowValue(key)">@key</td>
+            <td>No.</td>
+            <td>Key</td>
         </tr>
+        </thead>
+        <tbody>
+        @foreach (var (key, index) in KeyList.Select((x, i) => (x, i)))
+        {
+            <tr>
+                <td>@(index + 1)</td>
+                <td @onclick="() => ShowValue(key)">@key</td>
+            </tr>
 
-    }
-    </tbody>
-</table>
-
-<div id="list-end" class="mt-5 mb-5 p-5">
-    <p></p>
-    @if (IsLoading)
-    {
-        <div class="d-flex justify-content-center">
-            <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
+        }
+        </tbody>
+    </table>
+    <div id="list-end" class="mt-5 mb-5 p-5">
+        <p></p>
+        @if (IsLoading)
+        {
+            <div class="d-flex justify-content-center">
+                <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
             </div>
-        </div>
-    }
-
+        }
+    </div>
 </div>
 
+
 @code {
+
+    class Search
+    {
+        public string Pattern { get; set; } = "*";
+    }
+    
     [Parameter]
     public Guid Id { get; set; }
     
+    [CascadingParameter]
+    public IModalService Modal { get; set; }
+    
     private List<string> KeyList { get; set; }
 
-    private RedisValue Pattern { get; set; } = "*";
+    private Search _search = new();
     
     private int Page { get; set; } = 1;
     
@@ -54,7 +69,7 @@
 
     protected override void OnInitialized()
     {
-        KeyList = Reader.GetKeys(Id, Pattern, Page, PageSize);
+        UpdateKeys();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -82,12 +97,14 @@
 
             await Task.Delay(1000);
 
-            KeyList.AddRange(Reader.GetKeys(Id, Pattern, ++Page, PageSize));
+            Page++;
+            
+            KeyList.AddRange(GetKeys());
 
             IsLoading = false;
 
             StateHasChanged();
-    //at the end of pages or results stop loading anymore
+            //at the end of pages or results stop loading anymore
             //if (PageNumber > 4)
             //{
             //    await StopListener();
@@ -111,6 +128,30 @@
     private void ShowValue(string key)
     {
        StateContainer.SetKey(key);
+    }
+
+    private List<string> GetKeys()
+    {
+        try
+        {
+            return Reader.GetKeys(Id, _search.Pattern, Page, PageSize);
+        }
+        catch (Exception e)
+        {
+            var parameters = new ModalParameters();
+            parameters.Add("Message", e.Message);
+            var option = new ModalOptions
+            {
+                Class = "blazored-modal-error blazored-modal"
+            };
+            Modal.Show<CannotConnectModal>("Error retrieving keys", parameters, option);
+            return new List<string>();
+        }
+    }
+    
+    private void UpdateKeys()
+    {
+        KeyList = GetKeys();
     }
 
 }
