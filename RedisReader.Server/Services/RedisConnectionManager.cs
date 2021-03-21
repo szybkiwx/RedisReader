@@ -14,8 +14,8 @@ namespace RedisReader.Server.Services
     
     public class ManageRedisConnections : IManageRedisConnections
     {
-        private Dictionary<Guid, ConnectionMultiplexer> _activeConnections = new();
-        private IStoreConnections _connectionsStore;
+        private readonly Dictionary<Guid, ConnectionMultiplexer> _activeConnections = new();
+        private readonly IStoreConnections _connectionsStore;
 
         public ManageRedisConnections(IStoreConnections connectionsStore)
         {

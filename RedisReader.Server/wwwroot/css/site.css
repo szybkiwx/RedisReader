@@ -9,3 +9,7 @@
 .blazored-modal-error {
     max-width: 500px;
 }
+
+#keys-table .selected {
+    background-color: lightgray;
+}

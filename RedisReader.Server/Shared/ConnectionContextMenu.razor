@@ -1,5 +1,10 @@
+@using RedisReader.Server.Services
+@inject IManageRedisConnections ConnectionsManager
+@inject ConnectionStateContainer ConnectionStateContainer
+
 <ContextMenu Id="@MenuId">
     <Item OnClick="Edit">Edit</Item>
+    <Item OnClick="Disconnect">Disconnect</Item>
     <Item OnClick="Delete">Delete</Item>
 </ContextMenu>
 
@@ -31,5 +36,11 @@
         parameters.Add(nameof(ConnectionId), ConnectionId);
         var form = Modal.Show<DeleteConnectionForm>("Delete connection", parameters);
         ModalOpened.InvokeAsync(form);
+    }
+
+    private void Disconnect()
+    {
+        ConnectionsManager.CloseConnection(ConnectionId);
+        ConnectionStateContainer.NotifyStateChanged();
     }
 }

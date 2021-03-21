@@ -20,7 +20,7 @@
         <tbody>
         @foreach (var (key, index) in KeyList.Select((x, i) => (x, i)))
         {
-            <tr>
+            <tr class="@(StateContainer.Key == key ? "selected" : "")">
                 <td>@(index + 1)</td>
                 <td @onclick="() => ShowValue(key)">@key</td>
             </tr>
@@ -70,6 +70,12 @@
     protected override void OnInitialized()
     {
         UpdateKeys();
+    }
+
+    protected override void OnParametersSet()
+    {
+        UpdateKeys();
+
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

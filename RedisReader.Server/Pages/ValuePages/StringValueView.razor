@@ -8,9 +8,9 @@
     <label class="btn btn-secondary">
         <input type="radio" name="options" id="option2" autocomplete="off" @onclick="() => SetFormat(ValueFormat.Json)"> JSON
     </label>
-    <label class="btn btn-secondary">
+    <!--label class="btn btn-secondary">
         <input type="radio" name="options" id="option3" autocomplete="off" @onclick="() => SetFormat(ValueFormat.Protobuf)"> ProtoBuf
-    </label>
+    </label-->
 </div>
 <div>
 @switch (CurrentFormat)
@@ -19,14 +19,8 @@
         @Value
         break;
     case ValueFormat.Json:
-        try
-        {
-            <pre>@JToken.Parse(Value).ToString(Formatting.Indented) </pre>
-        }
-        catch (Exception e)
-        {
-            <span>Invalid value</span>
-        }
+        var jsonValue = GetJsonValue();
+        <pre>@jsonValue</pre>
         break;
         
 
@@ -51,5 +45,16 @@
     {
         CurrentFormat = format;
     }
+
+    private string GetJsonValue()
+    {
+        try
+        {
+            return JToken.Parse(Value).ToString(Formatting.Indented);
+        }
+        catch (Exception e)
+        {
+            return "Not  JSON value";
+        }}
 
 }
