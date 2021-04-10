@@ -1,5 +1,6 @@
 @using RedisReader.Server.Services
-@inject IStoreConnections ConnectionsManager
+@using RedisReader.Server.Models
+@inject IStoreData<RedisConnection> ConnectionsManager
 
 <div>
     <div class="card-body">
@@ -21,13 +22,13 @@
 
     protected override void OnInitialized()
     {
-        var connection = ConnectionsManager.GetConnection(ConnectionId);
+        var connection = ConnectionsManager.Get(ConnectionId);
         Name = connection.DisplayName;
     }
 
     private void Delete()
     {
-        ConnectionsManager.DeleteConnection(ConnectionId);
+        ConnectionsManager.Delete(ConnectionId);
         ModalInstance.CloseAsync(ModalResult.Ok(ConnectionId + "deleted"));
     }
     

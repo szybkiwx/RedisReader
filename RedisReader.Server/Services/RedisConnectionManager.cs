@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RedisReader.Server.Models;
 using StackExchange.Redis;
 
 namespace RedisReader.Server.Services
@@ -15,11 +16,11 @@ namespace RedisReader.Server.Services
     public class ManageRedisConnections : IManageRedisConnections
     {
         private readonly Dictionary<Guid, ConnectionMultiplexer> _activeConnections = new();
-        private readonly IStoreConnections _connectionsStore;
+        private readonly IStoreData<RedisConnection> _connections;
 
-        public ManageRedisConnections(IStoreConnections connectionsStore)
+        public ManageRedisConnections(IStoreData<RedisConnection> connections)
         {
-            _connectionsStore = connectionsStore;
+            _connections = connections;
         }
 
         public void Connect(Guid id)
@@ -30,7 +31,7 @@ namespace RedisReader.Server.Services
                 _activeConnections.Remove(id);
             }
             
-            var connectionDetails = _connectionsStore.GetConnection(id);
+            var connectionDetails = _connections.Get(id);
             var mux = ConnectionMultiplexer.Connect(new ConfigurationOptions
             {
                 Password = connectionDetails.Password,

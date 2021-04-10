@@ -53,10 +53,9 @@ namespace RedisReader.Server
             services.AddSingleton<WeatherForecastService>();
             services.AddBlazoredModal();
             services.AddBlazorContextMenu();
-            
-            services.AddScoped<IStoreConnections, ConnectionStore>();
-            services.AddSingleton<IStoreConnections, ConnectionStore>();
-            services.AddSingleton<IReadFromRedis, Services.DataReader>();
+
+            services.AddSingleton(typeof(IStoreData<>), typeof(DataStore<>));
+            services.AddSingleton<IReadFromRedis, Services.RedisDataReader>();
             services.AddSingleton<IManageRedisConnections, ManageRedisConnections>();
             services.AddSingleton<ConnectionStateContainer>();
             services.AddSingleton<KeyStateContainer>();

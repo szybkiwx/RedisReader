@@ -1,7 +1,7 @@
 @using System.ComponentModel.DataAnnotations
 @using RedisReader.Server.Models
 @using RedisReader.Server.Services
-@inject IStoreConnections ConnectionsManager
+@inject IStoreData<RedisConnection> ConnectionsManager
 
 <EditForm Model="@_connectionDetails" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator/>
@@ -41,7 +41,7 @@
     protected override void OnInitialized()
     {
         if (ConnectionId == null) return;
-        var connection = ConnectionsManager.GetConnection(ConnectionId.Value);
+        var connection = ConnectionsManager.Get(ConnectionId.Value);
         _connectionDetails = new ConnectionDetails
         {
             DisplayName = connection.DisplayName,
@@ -64,11 +64,11 @@
         if (ConnectionId.HasValue)
         {
             model.Id = ConnectionId.Value;
-            ConnectionsManager.UpdateConnection(model);    
+            ConnectionsManager.Update(model);    
         }
         else
         {
-            ConnectionsManager.AddConnection(model);
+            ConnectionsManager.Add(model);
         }
         
         ModalInstance.CloseAsync(ModalResult.Ok(_connectionDetails));

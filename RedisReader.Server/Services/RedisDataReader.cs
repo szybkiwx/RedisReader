@@ -12,11 +12,11 @@ namespace RedisReader.Server.Services
         IType GetValue(Guid connectionId, string key);
     }
 
-    public class DataReader : IReadFromRedis
+    public class RedisDataReader : IReadFromRedis
     {
         private readonly IManageRedisConnections _connections;
 
-        public DataReader(IManageRedisConnections connections)
+        public RedisDataReader(IManageRedisConnections connections)
         {
             _connections = connections;
         }
