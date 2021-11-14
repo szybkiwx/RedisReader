@@ -1,22 +1,33 @@
-using ElectronNET.API;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Blazored.Modal;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using RedisReader.Server.Services;
 
 namespace RedisReader.Server
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
-        }
+            var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            builder.RootComponents.Add<App>("#app");
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseElectron(args);
-                    webBuilder.UseStartup<Startup>();
-                });
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped<IStoreConnections, ConnectionStore>();
+            builder.Services.AddSingleton<IStoreConnections, ConnectionStore>();
+            builder.Services.AddSingleton<IReadFromRedis, DataReader>();
+            builder.Services.AddSingleton<IManageRedisConnections, ManageRedisConnections>();
+            builder.Services.AddSingleton<ConnectionStateContainer>();
+            builder.Services.AddSingleton<KeyStateContainer>();
+            
+            builder.Services.AddBlazoredModal();
+            builder.Services.AddBlazorContextMenu();
+            
+            
+            await builder.Build().RunAsync();
+        }
     }
 }
