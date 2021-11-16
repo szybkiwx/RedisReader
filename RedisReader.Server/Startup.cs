@@ -1,8 +1,4 @@
 using Blazored.Modal;
-using ElectronNET.API;
-using ElectronNET.API.Entities;
-using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,19 +22,16 @@ namespace RedisReader.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews()
-                .AddMicrosoftIdentityUI();
-
+            services.AddControllersWithViews();
             services.AddRazorPages();
-            services.AddServerSideBlazor()
-                .AddMicrosoftIdentityConsentHandler();
+            services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddBlazoredModal();
             services.AddBlazorContextMenu();
             
             services.AddScoped<IStoreConnections, ConnectionStore>();
             services.AddSingleton<IStoreConnections, ConnectionStore>();
-            services.AddSingleton<IReadFromRedis, Services.DataReader>();
+            services.AddSingleton<IReadFromRedis, DataReader>();
             services.AddSingleton<IManageRedisConnections, ManageRedisConnections>();
             services.AddSingleton<ConnectionStateContainer>();
             services.AddSingleton<KeyStateContainer>();
@@ -69,26 +62,6 @@ namespace RedisReader.Server
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-            
-            if (HybridSupport.IsElectronActive)
-            {
-                ElectronBootstrap();
-            }
-        }
-
-        public static async void ElectronBootstrap()
-        {
-            var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions
-            {
-                Width = 1920,
-                Height = 1080,
-                Show = false
-            });
-
-            await browserWindow.WebContents.Session.ClearCacheAsync();
-
-            browserWindow.OnReadyToShow += () => browserWindow.Show();
-            browserWindow.SetTitle("Blazor in Shell");
         }
     }
 }

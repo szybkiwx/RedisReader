@@ -15,7 +15,6 @@ namespace RedisReader.Server
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseElectron(args);
                     webBuilder.UseStartup<Startup>();
                 });
     }
